@@ -43,25 +43,23 @@ export default async function CatalogPage() {
   const { products, categories, error } = await loadCatalog();
 
   return (
-    <div className="page-shell overflow-hidden pb-12 pt-14 md:pb-16 md:pt-[4.5rem]">
-      <div className="border-b border-border pb-8">
-        <p className="text-xs uppercase tracking-[0.28em] text-taupe">
-          Каталог
-        </p>
-        <h1 className="editorial-title mt-4 max-w-full pb-2 text-5xl leading-[1.05] text-brown sm:text-6xl lg:text-7xl">
+    <div className="page-shell overflow-hidden pb-16 pt-12 md:pb-24 md:pt-16">
+      <div className="page-intro">
+        <p className="eyebrow text-taupe">Каталог</p>
+        <h1 className="editorial-title mt-4 max-w-full pb-2 text-5xl text-brown sm:text-6xl lg:text-7xl">
           Первая коллекция
         </h1>
-        <p className="mt-5 max-w-2xl text-sm leading-7 text-mocha">
+        <p className="mt-5 max-w-2xl text-base leading-8 text-mocha">
           Выберите вещь по силуэту, материалу и настроению. Каждая позиция
           создана как часть спокойной, цельной капсулы.
         </p>
       </div>
 
       {categories.length > 0 ? (
-        <nav className="flex gap-3 overflow-x-auto border-b border-border py-5">
+        <nav className="flex gap-6 overflow-x-auto border-b border-border py-6">
           <Link
             href="/catalog"
-            className="whitespace-nowrap bg-brown px-4 py-2 text-xs uppercase tracking-[0.16em] text-ivory"
+            className="whitespace-nowrap border-b border-brown pb-2 text-xs uppercase tracking-[0.18em] text-brown"
           >
             Все
           </Link>
@@ -69,7 +67,7 @@ export default async function CatalogPage() {
             <Link
               key={category.id}
               href={`/catalog/${category.slug}`}
-              className="whitespace-nowrap border border-border px-4 py-2 text-xs uppercase tracking-[0.16em] text-brown transition hover:border-brown"
+              className="whitespace-nowrap pb-2 text-xs uppercase tracking-[0.18em] text-taupe transition hover:text-brown"
             >
               {category.name}
             </Link>
@@ -84,7 +82,7 @@ export default async function CatalogPage() {
             description="Не удалось получить товары. Проверьте подключение к базе данных и выполните seed."
           />
         ) : products.length > 0 ? (
-          <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="grid gap-x-7 gap-y-12 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             {products.map((product) => (
               <ProductCard key={product.id} product={product} />
             ))}

@@ -2,17 +2,17 @@ import Link from "next/link";
 
 export function SiteFooter() {
   return (
-    <footer className="mt-20 border-t border-border">
-      <div className="page-shell grid gap-10 py-12 md:grid-cols-[1.4fr_1fr_1fr]">
+    <footer className="mt-20 border-t border-border bg-[#efe4d8]/55">
+      <div className="page-shell grid gap-10 py-14 md:grid-cols-[1.5fr_1fr_1fr] md:py-16">
         <div>
-          <p className="font-serif text-3xl text-brown">Velvet Whisper</p>
+          <p className="font-serif text-4xl text-brown">Velvet Whisper</p>
           <p className="mt-4 max-w-md text-sm leading-7 text-mocha">
             Женская одежда quiet luxury для тех, кто выбирает мягкую силу,
             тактильный комфорт и силуэт вне времени.
           </p>
         </div>
         <div>
-          <p className="text-xs uppercase tracking-[0.22em] text-taupe">
+          <p className="eyebrow text-taupe">
             Разделы
           </p>
           <div className="mt-4 flex flex-col gap-3 text-sm text-brown">
@@ -22,7 +22,7 @@ export function SiteFooter() {
           </div>
         </div>
         <div>
-          <p className="text-xs uppercase tracking-[0.22em] text-taupe">
+          <p className="eyebrow text-taupe">
             Клиентский сервис
           </p>
           <p className="mt-4 text-sm leading-7 text-mocha">

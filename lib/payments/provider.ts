@@ -1,53 +1,73 @@
+export type PaymentStatusCode = "pending" | "paid" | "failed" | "refunded";
+
 export type PaymentCreateInput = {
   amount: number;
   currency: "RUB";
+  orderId: string;
   description: string;
   customerEmail?: string;
+  customerPhone?: string;
 };
 
 export type PaymentCreateResult = {
+  provider: string;
   paymentId: string;
-  status: "pending" | "paid" | "failed" | "refunded";
-  redirectUrl?: string | null;
+  status: PaymentStatusCode;
+  confirmationUrl?: string | null;
   message: string;
 };
 
 export interface PaymentProvider {
+  provider: string;
   createPayment(input: PaymentCreateInput): Promise<PaymentCreateResult>;
 }
 
 class PlaceholderPaymentProvider implements PaymentProvider {
+  provider = "placeholder";
+
   async createPayment(input: PaymentCreateInput): Promise<PaymentCreateResult> {
     if (input.amount <= 0) {
       return {
+        provider: this.provider,
         paymentId: "",
         status: "failed",
-        redirectUrl: null,
+        confirmationUrl: null,
         message: "Сумма заказа должна быть больше нуля."
       };
     }
 
     if (process.env.PAYMENT_PLACEHOLDER_FORCE_ERROR === "true") {
       return {
+        provider: this.provider,
         paymentId: `demo_failed_${Date.now()}`,
         status: "failed",
-        redirectUrl: null,
+        confirmationUrl: null,
         message: "Демо-платёж завершился ошибкой. Попробуйте ещё раз."
       };
     }
 
     return {
+      provider: this.provider,
       paymentId: `demo_pending_${Date.now()}`,
       status: "pending",
-      redirectUrl: null,
+      confirmationUrl: `/success?orderId=${encodeURIComponent(input.orderId)}`,
       message:
-        "Платёж создан в демо-режиме. Здесь позже появится переход в платёжный виджет."
+        "Платёж создан в демо-режиме. Реальное списание средств не выполняется."
     };
   }
 }
 
-// Позже здесь можно подключить Stripe, ЮKassa или CloudPayments:
-// 1. реализовать класс с тем же интерфейсом PaymentProvider;
-// 2. создать платёж у провайдера и вернуть redirectUrl/paymentId;
-// 3. добавить webhook route для синхронизации paymentStatus в заказах.
-export const paymentProvider: PaymentProvider = new PlaceholderPaymentProvider();
+export async function getPaymentProvider(): Promise<PaymentProvider> {
+  const providerName = process.env.PAYMENT_PROVIDER ?? "placeholder";
+
+  if (providerName === "yookassa") {
+    const { YooKassaPaymentProvider } = await import("@/lib/payments/yookassa");
+    return new YooKassaPaymentProvider();
+  }
+
+  if (providerName === "placeholder") {
+    return new PlaceholderPaymentProvider();
+  }
+
+  throw new Error("UNSUPPORTED_PAYMENT_PROVIDER");
+}

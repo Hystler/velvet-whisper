@@ -5,10 +5,12 @@
 :root {
   --ivory: #f4eee4;
   --beige: #d6c1a8;
+  --sand: #cbb59d;
   --taupe: #a58b73;
   --mocha: #6f5541;
   --brown: #3f3027;
   --border: #ded2c3;
+  --muted: #7d6958;
 }
 
 * {
@@ -17,11 +19,14 @@
 
 html {
   scroll-behavior: smooth;
+  overflow-x: clip;
 }
 
 body {
   min-height: 100vh;
-  background: var(--ivory);
+  overflow-x: clip;
+  background:
+    linear-gradient(180deg, #f4eee4 0%, #f1e8dc 42%, #f4eee4 100%);
   color: var(--brown);
   font-family:
     Inter,
@@ -58,20 +63,50 @@ select:focus-visible {
 .editorial-title {
   font-family: Georgia, "Times New Roman", serif;
   font-weight: 400;
-  line-height: 0.98;
+  line-height: 1;
 }
 
 .page-shell {
   margin-inline: auto;
-  width: min(100% - 24px, 1180px);
+  width: min(calc(100% - 28px), 1240px);
 }
 
 .subtle-line {
   border-color: var(--border);
 }
 
+@layer components {
+  .eyebrow {
+    @apply text-xs uppercase tracking-[0.24em];
+  }
+
+  .editorial-panel {
+    @apply border border-border bg-[#f8f1e8]/75;
+  }
+
+  .primary-button {
+    @apply inline-flex min-h-12 max-w-full items-center justify-center bg-brown px-7 text-center text-sm uppercase leading-5 tracking-[0.16em] text-ivory transition duration-300 hover:bg-mocha;
+  }
+
+  .secondary-button {
+    @apply inline-flex min-h-12 max-w-full items-center justify-center border border-brown px-7 text-center text-sm uppercase leading-5 tracking-[0.16em] text-brown transition duration-300 hover:bg-brown hover:text-ivory;
+  }
+
+  .text-link {
+    @apply text-xs uppercase tracking-[0.18em] text-taupe underline-offset-4 transition hover:text-brown hover:underline;
+  }
+
+  .input-surface {
+    @apply min-h-12 w-full border border-border bg-[#f8f1e8]/80 px-4 text-brown placeholder:text-taupe transition duration-300 focus:border-brown focus:bg-ivory;
+  }
+
+  .page-intro {
+    @apply border-b border-border pb-8 pt-4 md:pb-10;
+  }
+}
+
 @media (min-width: 640px) {
   .page-shell {
-    width: min(100% - 40px, 1180px);
+    width: min(calc(100% - 48px), 1240px);
   }
 }

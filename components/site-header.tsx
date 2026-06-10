@@ -19,17 +19,20 @@ export function SiteHeader() {
   const { totalItems } = useCart();
 
   return (
-    <header className="sticky top-0 z-40 border-b border-border bg-ivory/95 backdrop-blur">
-      <div className="page-shell flex min-h-[72px] items-center justify-between gap-3 sm:min-h-20 sm:gap-5">
+    <header className="sticky top-0 z-40 border-b border-border bg-ivory/90 backdrop-blur-xl">
+      <div className="page-shell flex min-h-[68px] items-center justify-between gap-3 sm:min-h-[76px] sm:gap-5">
         <Link
           href="/"
-          className="min-w-0 shrink font-serif text-xl text-brown sm:text-2xl"
+          className="min-w-0 shrink font-serif text-lg leading-none text-brown sm:text-2xl"
           aria-label="Velvet Whisper, на главную"
         >
           Velvet Whisper
         </Link>
 
-        <nav className="hidden items-center gap-6 lg:flex xl:gap-8" aria-label="Главное меню">
+        <nav
+          className="hidden items-center gap-6 lg:flex xl:gap-9"
+          aria-label="Главное меню"
+        >
           {links.map((link) => (
             <Link
               key={link.href}
@@ -47,13 +50,18 @@ export function SiteHeader() {
         <div className="flex shrink-0 items-center gap-2 sm:gap-3">
           <Link
             href="/cart"
-            className="inline-flex min-h-10 items-center justify-center border border-brown px-3 text-xs uppercase tracking-[0.12em] text-brown transition hover:bg-brown hover:text-ivory sm:px-4 sm:tracking-[0.18em]"
+            className="inline-flex min-h-10 items-center justify-center border border-border bg-ivory/40 px-2 text-center text-xs uppercase leading-4 tracking-[0.1em] text-brown transition hover:border-brown hover:bg-ivory sm:px-4 sm:tracking-[0.16em]"
           >
-            Корзина {totalItems > 0 ? `(${totalItems})` : ""}
+            <span className="sm:hidden">
+              Корзина{totalItems > 0 ? ` ${totalItems}` : ""}
+            </span>
+            <span className="hidden sm:inline">
+              Корзина {totalItems > 0 ? `(${totalItems})` : ""}
+            </span>
           </Link>
           <button
             type="button"
-            className="inline-flex min-h-10 items-center border border-border px-3 text-xs uppercase tracking-[0.12em] text-brown sm:px-4 sm:tracking-[0.18em] lg:hidden"
+            className="inline-flex min-h-10 items-center border border-border px-2 text-xs uppercase tracking-[0.1em] text-brown transition hover:border-brown sm:px-4 sm:tracking-[0.16em] lg:hidden"
             onClick={() => setIsOpen((current) => !current)}
             aria-expanded={isOpen}
           >
@@ -64,7 +72,7 @@ export function SiteHeader() {
 
       {isOpen ? (
         <nav
-          className="border-t border-border bg-ivory px-3 py-4 lg:hidden"
+          className="border-t border-border bg-ivory/95 px-3 py-4 backdrop-blur-xl lg:hidden"
           aria-label="Мобильное меню"
         >
           <div className="mx-auto flex w-full max-w-[1180px] flex-col gap-3">
@@ -73,7 +81,7 @@ export function SiteHeader() {
                 key={link.href}
                 href={link.href}
                 onClick={() => setIsOpen(false)}
-                className="border-b border-border py-3 text-sm uppercase tracking-[0.18em] text-brown"
+                className="border-b border-border py-3 text-sm uppercase tracking-[0.18em] text-brown transition hover:text-mocha"
               >
                 {link.label}
               </Link>

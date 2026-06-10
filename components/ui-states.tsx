@@ -14,7 +14,7 @@ export function EmptyState({
   actionLabel
 }: StateProps) {
   return (
-    <div className="border border-border bg-ivory/70 px-6 py-12 text-center">
+    <div className="editorial-panel px-6 py-14 text-center">
       <h2 className="font-serif text-3xl text-brown">{title}</h2>
       <p className="mx-auto mt-3 max-w-xl text-sm leading-7 text-mocha">
         {description}
@@ -22,7 +22,7 @@ export function EmptyState({
       {actionHref && actionLabel ? (
         <Link
           href={actionHref}
-          className="mt-6 inline-flex min-h-11 max-w-full items-center justify-center bg-brown px-5 text-center text-sm uppercase leading-5 tracking-[0.14em] text-ivory transition hover:bg-mocha sm:px-6 sm:tracking-[0.18em]"
+          className="primary-button mt-6"
         >
           {actionLabel}
         </Link>
@@ -38,7 +38,7 @@ export function ErrorState({
   actionLabel
 }: Partial<StateProps>) {
   return (
-    <div className="border border-border bg-[#fff8ef] px-6 py-12 text-center">
+    <div className="border border-[#d7bea7] bg-[#fff8ef]/80 px-6 py-14 text-center">
       <h2 className="font-serif text-3xl text-brown">{title}</h2>
       <p className="mx-auto mt-3 max-w-xl text-sm leading-7 text-mocha">
         {description}
@@ -46,7 +46,7 @@ export function ErrorState({
       {actionHref && actionLabel ? (
         <Link
           href={actionHref}
-          className="mt-6 inline-flex min-h-11 max-w-full items-center justify-center border border-brown px-5 text-center text-sm uppercase leading-5 tracking-[0.14em] text-brown transition hover:bg-brown hover:text-ivory sm:px-6 sm:tracking-[0.18em]"
+          className="secondary-button mt-6"
         >
           {actionLabel}
         </Link>

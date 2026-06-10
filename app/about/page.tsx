@@ -11,10 +11,8 @@ export default function AboutPage() {
     <div className="page-shell py-12 md:py-20">
       <div className="grid gap-12 md:grid-cols-[0.9fr_1.1fr]">
         <div>
-          <p className="text-xs uppercase tracking-[0.28em] text-taupe">
-            О бренде
-          </p>
-          <h1 className="editorial-title mt-4 text-6xl text-brown md:text-8xl">
+          <p className="eyebrow text-taupe">О бренде</p>
+          <h1 className="editorial-title mt-4 text-5xl text-brown sm:text-6xl md:text-7xl">
             Velvet Whisper
           </h1>
         </div>
@@ -39,7 +37,7 @@ export default function AboutPage() {
 
       <div className="mt-16 grid gap-5 sm:grid-cols-3">
         {["Фактура", "Линия", "Спокойствие"].map((item) => (
-          <div key={item} className="border border-border bg-[#f8f1e8] p-6">
+          <div key={item} className="border-t border-border pt-6">
             <p className="font-serif text-3xl text-brown">{item}</p>
             <p className="mt-4 text-sm leading-7 text-mocha">
               Основа визуального языка бренда и каждого предмета коллекции.

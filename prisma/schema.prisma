@@ -110,12 +110,16 @@ model Order {
   total         Int
   paymentStatus PaymentStatus @default(PENDING)
   orderStatus   OrderStatus   @default(NEW)
+  paymentProvider String?
+  paymentId       String?       @unique
+  paymentUrl      String?
   createdAt     DateTime      @default(now())
   items         OrderItem[]
 
   @@index([createdAt])
   @@index([paymentStatus])
   @@index([orderStatus])
+  @@index([paymentProvider])
 }
 
 model OrderItem {

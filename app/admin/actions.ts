@@ -2,11 +2,12 @@
 
 import { OrderStatus, PaymentStatus } from "@prisma/client";
 import { revalidatePath } from "next/cache";
+import { isAdminAuthenticated } from "@/lib/admin-auth";
 import { isAdminDemoEnabled } from "@/lib/admin-demo";
 import { prisma } from "@/lib/prisma";
 
 export async function toggleProductStatus(formData: FormData) {
-  if (!isAdminDemoEnabled()) {
+  if (!isAdminDemoEnabled() || !(await isAdminAuthenticated())) {
     return;
   }
 
@@ -32,7 +33,7 @@ export async function toggleProductStatus(formData: FormData) {
 }
 
 export async function updateOrderStatuses(formData: FormData) {
-  if (!isAdminDemoEnabled()) {
+  if (!isAdminDemoEnabled() || !(await isAdminAuthenticated())) {
     return;
   }
 

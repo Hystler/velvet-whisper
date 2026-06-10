@@ -9,12 +9,10 @@ export const metadata: Metadata = {
 
 export default function CheckoutPage() {
   return (
-    <div className="page-shell py-12 md:py-16">
-      <div className="mb-10 border-b border-border pb-8">
-        <p className="text-xs uppercase tracking-[0.28em] text-taupe">
-          Checkout
-        </p>
-        <h1 className="editorial-title mt-4 text-5xl text-brown sm:text-6xl md:text-8xl">
+    <div className="page-shell py-12 md:py-20">
+      <div className="page-intro mb-10">
+        <p className="eyebrow text-taupe">Checkout</p>
+        <h1 className="editorial-title mt-4 text-5xl text-brown sm:text-6xl md:text-7xl">
           Оформление заказа
         </h1>
       </div>

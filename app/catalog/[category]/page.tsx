@@ -82,24 +82,21 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
   }
 
   return (
-    <div className="page-shell overflow-hidden pb-12 pt-14 md:pb-16 md:pt-[4.5rem]">
-      <div className="border-b border-border pb-8">
-        <Link
-          href="/catalog"
-          className="text-xs uppercase tracking-[0.22em] text-taupe underline-offset-4 hover:underline"
-        >
+    <div className="page-shell overflow-hidden pb-16 pt-12 md:pb-24 md:pt-16">
+      <div className="page-intro">
+        <Link href="/catalog" className="text-link">
           Весь каталог
         </Link>
-        <h1 className="editorial-title mt-4 max-w-full pb-2 text-5xl leading-[1.05] text-brown sm:text-6xl lg:text-7xl">
+        <h1 className="editorial-title mt-4 max-w-full pb-2 text-5xl text-brown sm:text-6xl lg:text-7xl">
           {category?.name ?? "Категория"}
         </h1>
       </div>
 
       {categories.length > 0 ? (
-        <nav className="flex gap-3 overflow-x-auto border-b border-border py-5">
+        <nav className="flex gap-6 overflow-x-auto border-b border-border py-6">
           <Link
             href="/catalog"
-            className="whitespace-nowrap border border-border px-4 py-2 text-xs uppercase tracking-[0.16em] text-brown transition hover:border-brown"
+            className="whitespace-nowrap pb-2 text-xs uppercase tracking-[0.18em] text-taupe transition hover:text-brown"
           >
             Все
           </Link>
@@ -109,8 +106,8 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
               href={`/catalog/${item.slug}`}
               className={
                 item.slug === categorySlug
-                  ? "whitespace-nowrap bg-brown px-4 py-2 text-xs uppercase tracking-[0.16em] text-ivory"
-                  : "whitespace-nowrap border border-border px-4 py-2 text-xs uppercase tracking-[0.16em] text-brown transition hover:border-brown"
+                  ? "whitespace-nowrap border-b border-brown pb-2 text-xs uppercase tracking-[0.18em] text-brown"
+                  : "whitespace-nowrap pb-2 text-xs uppercase tracking-[0.18em] text-taupe transition hover:text-brown"
               }
             >
               {item.name}
@@ -126,7 +123,7 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
             description="Не удалось получить товары этой категории. Проверьте подключение к базе данных."
           />
         ) : products.length > 0 ? (
-          <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="grid gap-x-7 gap-y-12 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             {products.map((product) => (
               <ProductCard key={product.id} product={product} />
             ))}

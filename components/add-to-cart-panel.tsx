@@ -98,7 +98,7 @@ export function AddToCartPanel({ product }: { product: AddToCartProduct }) {
   return (
     <div className="space-y-8">
       <div>
-        <p className="text-sm uppercase tracking-[0.18em] text-taupe">Цвет</p>
+        <p className="eyebrow text-taupe">Цвет</p>
         <div className="mt-3 flex flex-wrap gap-3">
           {colors.map((color) => (
             <button
@@ -113,7 +113,7 @@ export function AddToCartPanel({ product }: { product: AddToCartProduct }) {
               className={
                 selectedColor === color
                   ? "min-h-11 border border-brown bg-brown px-4 text-sm text-ivory"
-                  : "min-h-11 border border-border px-4 text-sm text-brown transition hover:border-brown"
+                  : "min-h-11 border border-border bg-ivory/40 px-4 text-sm text-brown transition hover:border-brown hover:bg-ivory"
               }
             >
               {color}
@@ -124,7 +124,7 @@ export function AddToCartPanel({ product }: { product: AddToCartProduct }) {
 
       <div>
         <div className="flex items-center justify-between gap-4">
-          <p className="text-sm uppercase tracking-[0.18em] text-taupe">
+          <p className="eyebrow text-taupe">
             Размер
           </p>
           <p className="text-xs text-taupe">XS-L</p>
@@ -146,7 +146,7 @@ export function AddToCartPanel({ product }: { product: AddToCartProduct }) {
                 className={
                   selectedSize === variant.size
                     ? "min-h-12 border border-brown bg-brown text-sm text-ivory"
-                    : "min-h-12 border border-border text-sm text-brown transition hover:border-brown disabled:cursor-not-allowed disabled:bg-border/40 disabled:text-taupe"
+                    : "min-h-12 border border-border bg-ivory/40 text-sm text-brown transition hover:border-brown hover:bg-ivory disabled:cursor-not-allowed disabled:bg-border/40 disabled:text-taupe"
                 }
               >
                 {variant.size}
@@ -160,7 +160,7 @@ export function AddToCartPanel({ product }: { product: AddToCartProduct }) {
         type="button"
         disabled={isSoldOut}
         onClick={handleAddToCart}
-        className="min-h-14 w-full bg-brown px-6 text-sm uppercase tracking-[0.18em] text-ivory transition hover:bg-mocha disabled:cursor-not-allowed disabled:bg-taupe/50"
+        className="primary-button min-h-14 w-full disabled:cursor-not-allowed disabled:bg-taupe/50"
       >
         {isSoldOut ? "Нет в наличии" : "Добавить в корзину"}
       </button>

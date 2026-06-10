@@ -2,9 +2,10 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { AdminDisabled } from "@/components/admin-disabled";
 import { AdminNav } from "@/components/admin-nav";
+import { AdminPasswordMissing } from "@/components/admin-password-missing";
 import { EmptyState, ErrorState } from "@/components/ui-states";
 import { formatDate, formatPrice } from "@/lib/format";
-import { isAdminDemoEnabled } from "@/lib/admin-demo";
+import { requireAdminAccess } from "@/lib/admin-guard";
 import { prisma } from "@/lib/prisma";
 import { orderStatusLabels, paymentStatusLabels } from "@/lib/status-labels";
 
@@ -55,7 +56,9 @@ async function loadAdminStats() {
 }
 
 export default async function AdminPage() {
-  if (!isAdminDemoEnabled()) {
+  const access = await requireAdminAccess();
+
+  if (access === "disabled") {
     return (
       <div className="page-shell py-12 md:py-16">
         <AdminDisabled />
@@ -63,16 +66,24 @@ export default async function AdminPage() {
     );
   }
 
+  if (access === "password-missing") {
+    return (
+      <div className="page-shell py-12 md:py-16">
+        <AdminPasswordMissing />
+      </div>
+    );
+  }
+
   const { data, error } = await loadAdminStats();
 
   return (
-    <div className="page-shell py-12 md:py-16">
-      <p className="text-xs uppercase tracking-[0.28em] text-taupe">
-        Управление
-      </p>
-      <h1 className="editorial-title mt-4 text-6xl text-brown md:text-8xl">
+    <div className="page-shell py-12 md:py-20">
+      <div className="page-intro">
+        <p className="eyebrow text-taupe">Управление</p>
+        <h1 className="editorial-title mt-4 text-5xl text-brown sm:text-6xl md:text-7xl">
         Админ-панель
-      </h1>
+        </h1>
+      </div>
       <div className="mt-8">
         <AdminNav />
       </div>
@@ -90,8 +101,8 @@ export default async function AdminPage() {
               ["Заказы", data.orderCount.toString()],
               ["Выручка", formatPrice(data.revenue)]
             ].map(([label, value]) => (
-              <div key={label} className="border border-border bg-[#f8f1e8] p-6">
-                <p className="text-xs uppercase tracking-[0.22em] text-taupe">
+              <div key={label} className="editorial-panel p-6">
+                <p className="eyebrow text-taupe">
                   {label}
                 </p>
                 <p className="mt-4 font-serif text-5xl text-brown">{value}</p>
@@ -106,14 +117,14 @@ export default async function AdminPage() {
               </h2>
               <Link
                 href="/admin/orders"
-                className="text-xs uppercase tracking-[0.18em] text-brown underline-offset-4 hover:underline"
+                className="text-link"
               >
                 Все заказы
               </Link>
             </div>
             {data.latestOrders.length > 0 ? (
               <div className="overflow-x-auto border border-border">
-                <table className="min-w-[760px] w-full border-collapse bg-[#f8f1e8] text-left text-sm">
+                <table className="w-full min-w-[760px] border-collapse bg-[#f8f1e8]/80 text-left text-sm">
                   <thead className="border-b border-border text-xs uppercase tracking-[0.16em] text-taupe">
                     <tr>
                       <th className="px-4 py-4 font-normal">Клиент</th>

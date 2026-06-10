@@ -9,7 +9,6 @@ type OrderRequestBody = {
   city?: string;
   address?: string;
   comment?: string;
-  paymentId?: string;
   items?: CheckoutItemPayload[];
 };
 

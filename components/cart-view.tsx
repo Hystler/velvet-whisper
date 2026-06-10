@@ -21,16 +21,16 @@ export function CartView() {
   }
 
   return (
-    <div className="grid gap-10 lg:grid-cols-[1fr_360px]">
+    <div className="grid gap-10 lg:grid-cols-[1fr_380px]">
       <div className="space-y-5">
         {items.map((item) => (
           <article
             key={item.variantId}
-            className="grid gap-5 border border-border bg-[#f8f1e8] p-4 sm:grid-cols-[132px_1fr]"
+            className="grid gap-5 border-b border-border pb-5 sm:grid-cols-[132px_1fr]"
           >
             <Link
               href={`/product/${item.slug}`}
-              className="relative block aspect-[4/5] overflow-hidden bg-beige/40"
+              className="relative block aspect-[4/5] overflow-hidden bg-beige/35"
             >
               {item.image ? (
                 <Image
@@ -52,7 +52,7 @@ export function CartView() {
                 <div>
                   <Link
                     href={`/product/${item.slug}`}
-                    className="font-serif text-3xl text-brown"
+                    className="font-serif text-3xl leading-tight text-brown"
                   >
                     {item.name}
                   </Link>
@@ -122,14 +122,14 @@ export function CartView() {
         </p>
         <Link
           href="/checkout"
-          className="mt-6 flex min-h-12 w-full items-center justify-center bg-brown px-6 text-sm uppercase tracking-[0.18em] text-ivory transition hover:bg-mocha"
+          className="primary-button mt-6 w-full"
         >
           Перейти к оформлению
         </Link>
         <button
           type="button"
           onClick={clearCart}
-          className="mt-4 min-h-11 w-full border border-border px-6 text-sm uppercase tracking-[0.18em] text-brown transition hover:border-brown"
+          className="secondary-button mt-4 w-full border-border"
         >
           Очистить корзину
         </button>

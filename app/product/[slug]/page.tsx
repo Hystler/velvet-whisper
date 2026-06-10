@@ -56,7 +56,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
 
   if (product === undefined) {
     return (
-      <div className="page-shell py-12 md:py-16">
+      <div className="page-shell py-16 md:py-24">
         <ErrorState
           title="Ошибка загрузки товара"
           description="Не удалось получить карточку товара. Проверьте подключение к базе данных и попробуйте ещё раз."
@@ -101,19 +101,19 @@ export default async function ProductPage({ params }: ProductPageProps) {
   };
 
   return (
-    <div className="page-shell py-10 md:py-16">
+    <div className="page-shell py-12 md:py-20">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
       <Link
         href="/catalog"
-        className="text-xs uppercase tracking-[0.22em] text-taupe underline-offset-4 hover:underline"
+        className="text-link"
       >
         Назад в каталог
       </Link>
 
-      <div className="mt-8 grid gap-10 lg:grid-cols-[1.05fr_0.95fr]">
+      <div className="mt-8 grid gap-10 lg:grid-cols-[1.08fr_0.92fr] lg:gap-14">
         <div className="grid gap-4 sm:grid-cols-2">
           {product.images.length > 0 ? (
             product.images.map((image, index) => (
@@ -121,8 +121,8 @@ export default async function ProductPage({ params }: ProductPageProps) {
                 key={image.id}
                 className={
                   index === 0
-                    ? "relative aspect-[4/5] overflow-hidden bg-beige/40 sm:col-span-2"
-                    : "relative aspect-[4/5] overflow-hidden bg-beige/40"
+                    ? "relative aspect-[4/5] overflow-hidden bg-beige/35 sm:col-span-2"
+                    : "relative aspect-[4/5] overflow-hidden bg-beige/35"
                 }
               >
                 <Image
@@ -148,13 +148,13 @@ export default async function ProductPage({ params }: ProductPageProps) {
         </div>
 
         <aside className="lg:sticky lg:top-28 lg:self-start">
-          <p className="text-xs uppercase tracking-[0.22em] text-taupe">
+          <p className="eyebrow text-taupe">
             {product.category.name}
           </p>
-          <h1 className="editorial-title mt-4 text-5xl text-brown md:text-7xl">
+          <h1 className="editorial-title mt-4 text-5xl text-brown sm:text-6xl lg:text-7xl">
             {product.name}
           </h1>
-          <div className="mt-6 flex items-end gap-4">
+          <div className="mt-7 flex items-end gap-4">
             <p className="text-xl text-brown">{formatPrice(product.price)}</p>
             {product.oldPrice ? (
               <p className="text-sm text-taupe line-through">
@@ -162,11 +162,20 @@ export default async function ProductPage({ params }: ProductPageProps) {
               </p>
             ) : null}
           </div>
-          <p className="mt-4 text-sm text-taupe">
-            {totalStock > 0 ? "В наличии" : "Товар закончился"}
-          </p>
+          <div className="mt-6 grid gap-3 border-y border-border py-5 text-sm text-mocha">
+            <p className="flex justify-between gap-4">
+              <span className="text-taupe">Цвет</span>
+              <span className="text-right text-brown">{product.color}</span>
+            </p>
+            <p className="flex justify-between gap-4">
+              <span className="text-taupe">Наличие</span>
+              <span className="text-right text-brown">
+                {totalStock > 0 ? "В наличии" : "Товар закончился"}
+              </span>
+            </p>
+          </div>
 
-          <div className="mt-8 border-y border-border py-8">
+          <div className="py-8">
             <AddToCartPanel
               product={{
                 id: product.id,
@@ -185,7 +194,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
             />
           </div>
 
-          <div className="divide-y divide-border border-b border-border">
+          <div className="divide-y divide-border border-y border-border">
             {[
               ["Описание", product.description],
               ["Состав", product.material],
@@ -197,7 +206,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
               ]
             ].map(([title, text]) => (
               <section key={title} className="py-5">
-                <h2 className="text-sm uppercase tracking-[0.18em] text-taupe">
+                <h2 className="eyebrow text-taupe">
                   {title}
                 </h2>
                 <p className="mt-3 text-sm leading-7 text-mocha">{text}</p>

@@ -1,6 +1,5 @@
 "use client";
 
-import { useRouter } from "next/navigation";
 import { FormEvent, useMemo, useState } from "react";
 import { useCart } from "@/components/cart-provider";
 import { EmptyState } from "@/components/ui-states";
@@ -25,12 +24,6 @@ const initialFields: CheckoutFields = {
   comment: ""
 };
 
-type PaymentState = {
-  paymentId: string;
-  message: string;
-  statusLabel: string;
-} | null;
-
 function buildCheckoutItems(items: ReturnType<typeof useCart>["items"]) {
   return items.map<CheckoutItemPayload>((item) => ({
     productId: item.productId,
@@ -40,15 +33,14 @@ function buildCheckoutItems(items: ReturnType<typeof useCart>["items"]) {
 }
 
 export function CheckoutForm() {
-  const router = useRouter();
   const { items, subtotal, clearCart } = useCart();
   const [fields, setFields] = useState<CheckoutFields>(initialFields);
-  const [payment, setPayment] = useState<PaymentState>(null);
   const [error, setError] = useState("");
   const [paymentLoading, setPaymentLoading] = useState(false);
   const [orderLoading, setOrderLoading] = useState(false);
 
   const checkoutItems = useMemo(() => buildCheckoutItems(items), [items]);
+  const isSubmitting = orderLoading || paymentLoading;
 
   if (items.length === 0) {
     return (
@@ -96,60 +88,13 @@ export function CheckoutForm() {
     return "";
   }
 
-  async function handleCreatePayment() {
-    setError("");
-    setPayment(null);
-
-    const validationError = validateForm();
-
-    if (validationError) {
-      setError(validationError);
-      return;
-    }
-
-    setPaymentLoading(true);
-
-    try {
-      const response = await fetch("/api/payments/create", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-          amount: subtotal,
-          currency: "RUB",
-          description: `Заказ Velvet Whisper на сумму ${formatPrice(subtotal)}`,
-          customerEmail: fields.email
-        })
-      });
-      const data = (await response.json()) as {
-        paymentId?: string;
-        message?: string;
-        statusLabel?: string;
-      };
-
-      if (!response.ok) {
-        setError(data.message ?? "Ошибка оплаты. Попробуйте ещё раз.");
-        return;
-      }
-
-      setPayment({
-        paymentId: data.paymentId ?? "",
-        message:
-          data.message ??
-          "Платёж создан в демо-режиме. Реальное списание не выполняется.",
-        statusLabel: data.statusLabel ?? "Ожидает оплаты"
-      });
-    } catch {
-      setError("Ошибка оплаты. Проверьте соединение и попробуйте снова.");
-    } finally {
-      setPaymentLoading(false);
-    }
-  }
-
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setError("");
+
+    if (isSubmitting) {
+      return;
+    }
 
     const validationError = validateForm();
 
@@ -161,40 +106,66 @@ export function CheckoutForm() {
     setOrderLoading(true);
 
     try {
-      const response = await fetch("/api/orders", {
+      const orderResponse = await fetch("/api/orders", {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
         },
         body: JSON.stringify({
           ...fields,
-          paymentId: payment?.paymentId,
           items: checkoutItems
         })
       });
-      const data = (await response.json()) as {
+      const orderData = (await orderResponse.json()) as {
         orderId?: string;
         message?: string;
       };
 
-      if (!response.ok) {
-        setError(data.message ?? "Ошибка создания заказа. Попробуйте ещё раз.");
+      if (!orderResponse.ok || !orderData.orderId) {
+        setError(
+          orderData.message ?? "Ошибка создания заказа. Попробуйте ещё раз."
+        );
+        return;
+      }
+
+      setOrderLoading(false);
+      setPaymentLoading(true);
+
+      const paymentResponse = await fetch("/api/payments/create", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          orderId: orderData.orderId
+        })
+      });
+      const paymentData = (await paymentResponse.json()) as {
+        redirectUrl?: string;
+        message?: string;
+      };
+
+      if (!paymentResponse.ok || !paymentData.redirectUrl) {
+        setError(paymentData.message ?? "Ошибка оплаты. Попробуйте ещё раз.");
         return;
       }
 
       clearCart();
-      router.push(`/success?order=${data.orderId ?? ""}`);
+      window.location.href = paymentData.redirectUrl;
     } catch {
-      setError("Ошибка создания заказа. Проверьте соединение и попробуйте снова.");
+      setError(
+        "Ошибка оформления заказа или оплаты. Проверьте соединение и попробуйте снова."
+      );
     } finally {
       setOrderLoading(false);
+      setPaymentLoading(false);
     }
   }
 
   return (
     <form
       onSubmit={handleSubmit}
-      className="grid gap-10 lg:grid-cols-[1fr_360px]"
+      className="grid gap-10 lg:grid-cols-[1fr_380px]"
     >
       <div className="space-y-5">
         {[
@@ -205,7 +176,7 @@ export function CheckoutForm() {
           ["address", "Адрес доставки"]
         ].map(([name, label]) => (
           <label key={name} className="block">
-            <span className="text-sm uppercase tracking-[0.18em] text-taupe">
+            <span className="eyebrow text-taupe">
               {label}
             </span>
             <input
@@ -216,7 +187,7 @@ export function CheckoutForm() {
                   event.currentTarget.value
                 )
               }
-              className="mt-3 min-h-12 w-full border border-border bg-[#f8f1e8] px-4 text-brown placeholder:text-taupe"
+              className="input-surface mt-3"
               placeholder={label}
               autoComplete={name === "email" ? "email" : "on"}
             />
@@ -224,13 +195,15 @@ export function CheckoutForm() {
         ))}
 
         <label className="block">
-          <span className="text-sm uppercase tracking-[0.18em] text-taupe">
+          <span className="eyebrow text-taupe">
             Комментарий к заказу
           </span>
           <textarea
             value={fields.comment}
-            onChange={(event) => updateField("comment", event.currentTarget.value)}
-            className="mt-3 min-h-32 w-full resize-y border border-border bg-[#f8f1e8] px-4 py-3 text-brown placeholder:text-taupe"
+            onChange={(event) =>
+              updateField("comment", event.currentTarget.value)
+            }
+            className="input-surface mt-3 min-h-32 resize-y py-3"
             placeholder="Например, удобное время доставки"
           />
         </label>
@@ -240,17 +213,10 @@ export function CheckoutForm() {
             {error}
           </p>
         ) : null}
-        {payment ? (
-          <p className="border border-sage/40 bg-[#edf0e7] px-4 py-3 text-sm leading-6 text-sage">
-            {payment.statusLabel}: {payment.message}
-          </p>
-        ) : null}
       </div>
 
-      <aside className="border border-border bg-[#f8f1e8] p-6 lg:sticky lg:top-28 lg:self-start">
-        <p className="text-xs uppercase tracking-[0.22em] text-taupe">
-          Заказ
-        </p>
+      <aside className="editorial-panel p-6 lg:sticky lg:top-28 lg:self-start">
+        <p className="eyebrow text-taupe">Заказ</p>
         <div className="mt-5 space-y-4 border-b border-border pb-5">
           {items.map((item) => (
             <div
@@ -269,23 +235,19 @@ export function CheckoutForm() {
           <span>{formatPrice(subtotal)}</span>
         </div>
         <button
-          type="button"
-          disabled={paymentLoading || orderLoading}
-          onClick={handleCreatePayment}
-          className="mt-6 min-h-12 w-full border border-brown px-6 text-sm uppercase tracking-[0.18em] text-brown transition hover:bg-brown hover:text-ivory disabled:cursor-not-allowed disabled:border-taupe disabled:text-taupe"
-        >
-          {paymentLoading ? "Создаём платёж..." : "Перейти к оплате"}
-        </button>
-        <button
           type="submit"
-          disabled={orderLoading || paymentLoading}
-          className="mt-3 min-h-12 w-full bg-brown px-6 text-sm uppercase tracking-[0.18em] text-ivory transition hover:bg-mocha disabled:cursor-not-allowed disabled:bg-taupe/50"
+          disabled={isSubmitting}
+          className="primary-button mt-6 w-full disabled:cursor-not-allowed disabled:bg-taupe/50"
         >
-          {orderLoading ? "Оформляем заказ..." : "Оформить заказ"}
+          {paymentLoading
+            ? "Переходим к оплате..."
+            : orderLoading
+              ? "Оформляем заказ..."
+              : "Перейти к оплате"}
         </button>
         <p className="mt-5 text-xs leading-6 text-taupe">
-          Онлайн-оплата работает в демо-режиме. Реальное списание средств не
-          выполняется.
+          После подтверждения заказа вы перейдёте на защищённую страницу оплаты.
+          Статус оплаты обновится после уведомления от платёжного провайдера.
         </p>
       </aside>
     </form>

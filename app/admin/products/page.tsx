@@ -2,9 +2,10 @@ import type { Metadata } from "next";
 import { toggleProductStatus } from "@/app/admin/actions";
 import { AdminDisabled } from "@/components/admin-disabled";
 import { AdminNav } from "@/components/admin-nav";
+import { AdminPasswordMissing } from "@/components/admin-password-missing";
 import { EmptyState, ErrorState } from "@/components/ui-states";
 import { formatPrice } from "@/lib/format";
-import { isAdminDemoEnabled } from "@/lib/admin-demo";
+import { requireAdminAccess } from "@/lib/admin-guard";
 import { prisma } from "@/lib/prisma";
 
 export const dynamic = "force-dynamic";
@@ -39,7 +40,9 @@ async function loadProducts() {
 }
 
 export default async function AdminProductsPage() {
-  if (!isAdminDemoEnabled()) {
+  const access = await requireAdminAccess();
+
+  if (access === "disabled") {
     return (
       <div className="page-shell py-12 md:py-16">
         <AdminDisabled />
@@ -47,16 +50,24 @@ export default async function AdminProductsPage() {
     );
   }
 
+  if (access === "password-missing") {
+    return (
+      <div className="page-shell py-12 md:py-16">
+        <AdminPasswordMissing />
+      </div>
+    );
+  }
+
   const { products, error } = await loadProducts();
 
   return (
-    <div className="page-shell py-12 md:py-16">
-      <p className="text-xs uppercase tracking-[0.28em] text-taupe">
-        Админка
-      </p>
-      <h1 className="editorial-title mt-4 text-6xl text-brown md:text-8xl">
-        Товары
-      </h1>
+    <div className="page-shell py-12 md:py-20">
+      <div className="page-intro">
+        <p className="eyebrow text-taupe">Админка</p>
+        <h1 className="editorial-title mt-4 text-5xl text-brown sm:text-6xl md:text-7xl">
+          Товары
+        </h1>
+      </div>
       <div className="mt-8">
         <AdminNav />
       </div>
@@ -68,7 +79,7 @@ export default async function AdminProductsPage() {
         />
       ) : products.length > 0 ? (
         <div className="overflow-x-auto border border-border">
-          <table className="min-w-[900px] w-full border-collapse bg-[#f8f1e8] text-left text-sm">
+          <table className="w-full min-w-[900px] border-collapse bg-[#f8f1e8]/80 text-left text-sm">
             <thead className="border-b border-border text-xs uppercase tracking-[0.16em] text-taupe">
               <tr>
                 <th className="px-4 py-4 font-normal">Товар</th>
@@ -113,7 +124,7 @@ export default async function AdminProductsPage() {
                         />
                         <button
                           type="submit"
-                          className="min-h-10 border border-border px-4 text-xs uppercase tracking-[0.16em] text-brown transition hover:border-brown"
+                          className="min-h-10 border border-border bg-ivory/40 px-4 text-xs uppercase tracking-[0.16em] text-brown transition hover:border-brown hover:bg-ivory"
                         >
                           {product.isActive ? "Скрыть" : "Активировать"}
                         </button>

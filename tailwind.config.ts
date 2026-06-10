@@ -11,10 +11,12 @@ const config = {
       colors: {
         ivory: "#F4EEE4",
         beige: "#D6C1A8",
+        sand: "#CBB59D",
         taupe: "#A58B73",
         mocha: "#6F5541",
         brown: "#3F3027",
         border: "#DED2C3",
+        muted: "#7D6958",
         sage: "#687061",
         ink: "#241C17"
       },

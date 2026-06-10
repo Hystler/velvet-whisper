@@ -263,6 +263,8 @@ async function main() {
         total: createdProducts[0].price + createdProducts[3].price,
         paymentStatus: "PAID",
         orderStatus: "PROCESSING",
+        paymentProvider: "demo",
+        paymentId: "demo_seed_paid_order",
         items: {
           create: [
             {
